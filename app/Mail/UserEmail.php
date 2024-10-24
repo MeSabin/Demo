@@ -25,7 +25,7 @@ class UserEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->details['subject'],
+            subject: "Your Login verification link",
         );
     }
 

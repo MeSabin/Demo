@@ -1,63 +1,63 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Mail\UserEmail;
+use App\Mail\UserEmail;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\RedirectResponse as HttpFoundationRedirectResponse;
 
 class UserController extends Controller
 {
-    public function registerUser(Request $request){
-        $request->validate([
-            'username' => 'required',
-            'email' => 'required', 
-            'password' => 'required', 
-            'confirm_password' => 'required|confirmed:password'
-        ],
-        [
-            'username.required' => 'Name field is required',
-            'email.required' => 'Email field is required', 
-            'password.required' => 'Password is required',
-            'confirm_password.required' => 'Confirm password is required',
-            'confirm_password.confirmed' => 'Password is not matching',
+    public function registerUser(RegisterRequest $request): View{
+        try{
 
-        ] 
-    );
+        $verification_token = Str::random(64);
+        $request->merge([
+            'password' => Hash::make($request->password),
+            'verification_token' => $verification_token,
 
-        User::create([
-            'name' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
         ]);
+        
+        $user = User::create($request->all());
         $details =[
-            'username' =>$request->username,
-            'subject' => "Email Verification"
+            'username' =>$request->name,
+            'verification_token' => $verification_token,
         ];
         Mail::to($request->email)->send(new UserEmail($details));
-        return redirect()->back()->with('registerSuccess', 'User registered successfully');
+        // return redirect()->back()->with('registerSuccess', 'User registered successfully');
+        return view('verificationNotice', ['email'=>$request->email]);
+    }catch(\Exception $e){
+        Log::error($e->getMessage());
+    }
     }
 
 
-    public function loginUser(Request $request) {
-       $credentials = $request->validate([
-            'email' => 'required', 
-            'password' => 'required'
-        ], 
-    [
-        'email.required' => 'Email field is required',
-        'password.required' => 'Password field is required'
-    ]);
+    public function loginUser(LoginRequest $request): RedirectResponse | View {
+       $credentials = $request->except(['_token']);
+
 
     if(Auth::attempt($credentials)){
-        $user = Auth::user();
-        $username =$user->name;
-        $details =[
-            'email' => $request->email,
-            'username' => $username
-        ];
+        $user = User::where('email', $request->email)->first();
+        $email_verified_at = $user->email_verified_at;
+
+        if($email_verified_at == NULL){
+            $verification_token = Str::random(64);
+            $email = $request->email;
+            $user->verification_token = $verification_token;
+            $user->update();
+
+            return view('verificationNotice');
+        }
         return redirect()->route('dashboard');
     }
     else{
@@ -65,7 +65,17 @@ class UserController extends Controller
     }
     }
 
-    public function viewDashboard() {
+    public function viewDashboard():View 
+    {
         return view('dashboard');
+    }
+
+
+    public function Logout(Request $request):RedirectResponse
+     {
+        Auth::logout();
+        $request->session()->regenerate();
+        $request->session()->flush();
+        return redirect()->route('login');
     }
 }
