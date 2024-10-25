@@ -18,7 +18,7 @@ class EmailVerification extends Controller
             $user->save();
             Auth::login($user);  // logs in the user so that middleware doesnot interfere
 
-            
+            //message
             return redirect()->route('dashboard')->with('loginSuccess', 'Verified');
         }
 
