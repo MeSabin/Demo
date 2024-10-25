@@ -16,16 +16,17 @@ class EmailVerification extends Controller
             $user->verification_token = null;
             $user->email_verified_at = now();
             $user->save();
-            Auth::login($user);
+            Auth::login($user);  // logs in the user so that middleware doesnot interfere
 
-            // messsage 
-            return redirect()->route('dashboard');
+            //message
+            return redirect()->route('dashboard')->with('loginSuccess', 'Verified');
         }
 
         return redirect()->route('tokenExpired');
     }
 
-    public function tokenExpired():View {
+    public function tokenExpired(): View
+    {
         return view('tokenExpired');
     }
 }

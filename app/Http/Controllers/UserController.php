@@ -36,7 +36,8 @@ class UserController extends Controller
         Mail::to($request->email)->send(new UserEmail($details));
         // return redirect()->back()->with('registerSuccess', 'User registered successfully');
         return view('verificationNotice', ['email'=>$request->email]);
-    }catch(\Exception $e){
+    }
+    catch(\Exception $e){
         Log::error($e->getMessage());
     }
     }
@@ -52,13 +53,22 @@ class UserController extends Controller
 
         if($email_verified_at == NULL){
             $verification_token = Str::random(64);
-            $email = $request->email;
             $user->verification_token = $verification_token;
             $user->update();
 
-            return view('verificationNotice');
+            $username = $user->name;
+            $details =[
+                'username' =>$username,
+                'verification_token' => $verification_token,
+            ];
+
+            Mail::to($request->email)->send(new UserEmail($details));
+
+            return view('verificationNotice', ['email'=>$request->email]);
         }
-        return redirect()->route('dashboard');
+        else{
+            return redirect()->route('dashboard');
+        }
     }
     else{
         return redirect()->back();
