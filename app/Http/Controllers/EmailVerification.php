@@ -19,7 +19,7 @@ class EmailVerification extends Controller
             Auth::login($user);  // logs in the user so that middleware doesnot interfere
 
             //message
-            return redirect()->route('dashboard')->with('loginSuccess', 'Verified');
+            return redirect()->route('dashboard')->with('loginSuccess', 'You are verified now !');
         }
 
         return redirect()->route('tokenExpired');

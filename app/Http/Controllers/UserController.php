@@ -39,7 +39,9 @@ class UserController extends Controller
     }
     catch(\Exception $e){
         Log::error($e->getMessage());
+        return view('verificationNotice', ['email'=>$request->email]);
     }
+
     }
 
 

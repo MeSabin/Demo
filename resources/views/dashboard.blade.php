@@ -11,6 +11,15 @@
 
 <body>
     <div>
+        @if (session('loginSuccess'))
+            <x-alert>
+                <div
+                   id="alert" class="bg-white absolute right-5 top-5 z-50 py-3 px-6 rounded-md border-2 border-green-500 flex flex-row items-center ">
+                    <img src="{{ asset('images/check-mark.png') }}" alt="Image not found" class="w-8">
+                    <p class="text-green-500 font-bold">{{ session('loginSuccess') }}</p>
+                </div>
+            </x-alert>
+        @endif
         <aside class="bg-gray-200 w-64 min-h-screen">
             <div class="flex items-center gap-8 px-4 pt-4 mb-10">
                 <div>
@@ -38,10 +47,6 @@
                         <p class="">User Dashboard</p>
                     </div>
                     <div>
-                        <p class="text-green-700 text-lg font-semibold ">Verified</p>
-                        @if (session('loginSuccess'))
-                            <p class="text-green-700">{{ session('loginSuccess') }}</p>
-                        @endif
                     </div>
                 </div>
                 <div class="mr-6 cursor-pointer" id="profile">
@@ -57,22 +62,7 @@
             </header>
         </div>
     </div>
-
-    <script>
-        window.addEventListener('load', function() {
-            let profile = document.querySelector('#profile');
-            let profileModal = document.querySelector('#profile_modal');
-
-            profile.onclick = function() {
-                console.log('Cliked');
-                if (profileModal.style.display == 'block') {
-                    profileModal.style.display = 'none';
-                } else {
-                    profileModal.style.display = 'block';
-                }
-            }
-        });
-    </script>
+    <script src="{{ asset('js/profileModal.js') }}"></script>
 </body>
 
 </html>
