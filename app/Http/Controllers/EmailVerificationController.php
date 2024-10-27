@@ -7,7 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EmailVerification extends Controller
+class EmailVerificationController extends Controller
 {
     public function verifyUser($token): RedirectResponse
     {
@@ -27,6 +27,6 @@ class EmailVerification extends Controller
 
     public function tokenExpired(): View
     {
-        return view('tokenExpired');
+        return view('token-expired');
     }
 }
