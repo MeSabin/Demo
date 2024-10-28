@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductCategoryController extends Controller
@@ -18,15 +19,7 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ProductCategory::with("users")->get();
-        
-        // $created_by = ProductCategory::pluck('created_by');
-
-        // $added_by  = ProductCategory::with('user')->find($created_by);
-        // $added_by = ProductCategory::find(21)->user;
-        // $name = $added_by->name;
-        // dd($added_by);
-      
+        $categories = ProductCategory::with("users")->paginate(2);
         return view('product-category' , compact('categories'));
     }
 
@@ -43,7 +36,6 @@ class ProductCategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request): RedirectResponse    
     {
-       
         // $path = $request->image->store('image', 'public');
         if($request->hasFile('image')){
             $imageName = time().'.'.request()->image->getClientOriginalExtension();
@@ -54,7 +46,7 @@ class ProductCategoryController extends Controller
         $product_category->image = $imageName;
         $product_category->created_by = Auth::id();
         $product_category->save();
-
+        
         return redirect()->route('product-category.index')->with('category_success','Category successfully added');
        
     }
@@ -70,7 +62,7 @@ class ProductCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
         $product_category = ProductCategory::find($id);
         return view('update-category', compact('product_category'));
@@ -79,7 +71,7 @@ class ProductCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
         $request->validate([
             'name' =>'required',
@@ -87,7 +79,7 @@ class ProductCategoryController extends Controller
 
         $product_category = ProductCategory::find($id);
 
-        if($request->hasFile(   'image')){
+        if($request->hasFile('image')){
 
             $image_path = storage_path('app/public/images/product_categories'. $product_category->image);
             // dd($image_path);
@@ -118,7 +110,7 @@ class ProductCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
         $product_category = ProductCategory::find($id);
         $product_category->delete();

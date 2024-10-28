@@ -9,7 +9,7 @@
                 <div class="flex flex-col">
                     <label for="">Name:</label>
                     <input name="name" value="{{ $product_category->name }}" type="text"
-                        class="border py-1 border-gray-900 rounded-md">
+                        class="border py-1 border-gray-900 rounded-md px-2">
                     <span class="text-red-600">
                         @error('name')
                             {{ $message }}

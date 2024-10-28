@@ -3,7 +3,6 @@ window.addEventListener('load', function() {
    let profileModal = document.querySelector('#profile_modal');
 
    profile.onclick = function() {
-       console.log('Cliked');
        if (profileModal.style.display == 'block') {
            profileModal.style.display = 'none';
        } else {

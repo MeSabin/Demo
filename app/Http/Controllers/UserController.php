@@ -29,6 +29,7 @@ class UserController extends Controller
         ]);
         
         $user = User::create($request->all());
+        
         $details =[
             'username' =>$request->name,
             'verification_token' => $verification_token,

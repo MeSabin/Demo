@@ -21,7 +21,7 @@
         <aside class="bg-gray-200 fixed top-0 min-h-screen w-64">
             <div class="flex items-center gap-8 px-4 pt-4 mb-10">
                 <div>
-                    <img src="{{ asset('images/ecommerce.png') }}" alt="Image not found" class="w-16">
+                    <img src="{{ asset('images/ecommerce.png') }}" alt="Image not found" class="w-16 h-16">
                 </div>
                 <div>
                     <p class="font-bold text-lg">E-commerce</p>
@@ -36,8 +36,8 @@
                         <a href="{{ route('product-category.index') }}" class=" font-semibold text-base pl-8 ">Product
                             Category</a>
                     </li>
-                    <li class="mt-4">
-                        <a href="" class="font-semibold text-base pl-8">Products</a>
+                    <li class="mt-4 py-2 rounded {{ Route::is('products*') ? 'active' : '' }}">
+                        <a href="{{ route('products.index') }}" class="font-semibold text-base pl-8">Products</a>
                     </li>
                 </ul>
             </nav>
@@ -52,13 +52,13 @@
                 </div>
             </div>
             <div class="mr-6 cursor-pointer" id="profile">
-                <img src="{{ asset('images/profile.png') }}" alt="Image not found" class="w-10">
+                <img src="{{ asset('images/profile.png') }}" alt="Image not found" class="w-10 h-10">
             </div>
             <div class="hidden absolute top-16 right-6  border bg-white border-gray-500 text-sm shadow-lg rounded-md p-4"
                 id="profile_modal">
-                <p class="text-blue-500">Your Email: {{ Auth::user()->email }}</p>
-                <p class="text-blue-500">Your Name: {{ Auth::user()->name }}</p>
-                <a href="{{ route('Logout') }}" class="text-blue-500">Logout</a>
+                <p class="text-gray-600 font-bold">Email: {{ Auth::user()->email }}</p>
+                <p class="text-gray-600 font-bold">Name: {{ Auth::user()->name }}</p>
+                <a href="{{ route('Logout') }}" class="text-gray-600 font-bold ">Logout</a>
 
             </div>
         </header>
