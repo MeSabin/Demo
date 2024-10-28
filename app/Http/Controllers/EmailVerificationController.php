@@ -7,7 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EmailVerification extends Controller
+class EmailVerificationController extends Controller
 {
     public function verifyUser($token): RedirectResponse
     {
@@ -19,7 +19,7 @@ class EmailVerification extends Controller
             Auth::login($user);  // logs in the user so that middleware doesnot interfere
 
             //message
-            return redirect()->route('dashboard')->with('loginSuccess', 'Verified');
+            return redirect()->route('dashboard')->with('loginSuccess', 'You are verified now !');
         }
 
         return redirect()->route('tokenExpired');
@@ -27,6 +27,6 @@ class EmailVerification extends Controller
 
     public function tokenExpired(): View
     {
-        return view('tokenExpired');
+        return view('token-expired');
     }
 }
