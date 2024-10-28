@@ -29,6 +29,7 @@ class UserController extends Controller
         ]);
         
         $user = User::create($request->all());
+        
         $details =[
             'username' =>$request->name,
             'verification_token' => $verification_token,
@@ -39,7 +40,9 @@ class UserController extends Controller
     }
     catch(\Exception $e){
         Log::error($e->getMessage());
+        return view('verificationNotice', ['email'=>$request->email]);
     }
+
     }
 
 
