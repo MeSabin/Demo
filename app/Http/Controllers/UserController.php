@@ -36,11 +36,11 @@ class UserController extends Controller
         ];
         Mail::to($request->email)->send(new UserEmail($details));
         // return redirect()->back()->with('registerSuccess', 'User registered successfully');
-        return view('verificationNotice', ['email'=>$request->email]);
+        return view('admin.auth.verification-notice', ['email'=>$request->email]);
     }
     catch(\Exception $e){
         Log::error($e->getMessage());
-        return view('verificationNotice', ['email'=>$request->email]);
+        return view('admin.auth.verification-notice', ['email'=>$request->email]);
     }
 
     }
@@ -67,7 +67,7 @@ class UserController extends Controller
 
             Mail::to($request->email)->send(new UserEmail($details));
 
-            return view('verificationNotice', ['email'=>$request->email]);
+            return view('admin.auth.verification-notice', ['email'=>$request->email]);
         }
         else{
             return redirect()->route('dashboard');
@@ -80,7 +80,7 @@ class UserController extends Controller
 
     public function viewDashboard():View 
     {
-        return view('dashboard');
+        return view('admin.dashboard.index');
     }
 
 

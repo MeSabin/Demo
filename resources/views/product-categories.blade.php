@@ -1,4 +1,7 @@
 @extends('main-layout')
+@section('pageName')
+    Product Categories
+@endsection
 @section('content')
     @if (session('category_success'))
         <x-alert>
@@ -28,17 +31,18 @@
         </x-alert>
     @endif
     <div class="mt-40 px-10">
-        <a href="{{ route('product-category.create') }}" class="rounded bg-green-500 text-white py-2 px-3">Add Category</a>
+        <a href="{{ route('product-category.create') }}"
+            class="rounded bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Category</a>
         <div class="mt-10">
-            <table class="min-w-full border-2 border-gray-300 rounded-lg">
+            <table class="min-w-full bg-gray-50 rounded-md overflow-hidden">
 
-                <thead>
-                    <tr class="border-2 border-gray-300">
-                        <th class="text-center">S.N</th>
-                        <th class="text-center">Category</th>
-                        <th class="text-center">Image</th>
-                        <th class="text-center">Added By</th>
-                        <th class="text-center">Action</th>
+                <thead class="bg-gray-600 text-white ">
+                    <tr class="border-gray-300">
+                        <th class="text-center py-2">S.N</th>
+                        <th class="text-center py-2">Category</th>
+                        <th class="text-center py-2">Image</th>
+                        <th class="text-center py-2">Added By</th>
+                        <th class="text-center py-2">Action</th>
 
                     </tr>
                 </thead>
@@ -47,20 +51,21 @@
                     @php
                         $i = $categories->firstItem();
                     @endphp
+
                     @foreach ($categories as $category)
-                        <tr class="">
-                            <td class="text-center">{{ $i++ }}</td>
+                        <tr class="hover:bg-gray-100">
+                            <td class="text-center">{{ $i++ }}.</td>
                             <td class="text-center">{{ $category->name }}</td>
-                            <td class="flex justify-center items-center">
+                            <td class="flex justify-center items-center mt-1">
                                 <img class=" text-center w-14 h-14 rounded-full" src="{{ $category->image_path }}"
                                     alt="Image not found">
                             </td>
                             <td class="text-center">{{ $category->users->name }}</td>
-                            <td class="pb-2 flex justify-center">
+                            <td class="text-center">
                                 <a href="{{ route('product-category.edit', $category->id) }}"
-                                    class="bg-blue-500 text-white px-2 mr-2 rounded">Edit</a>
+                                    class="bg-blue-500 hover:bg-blue-600 duration-200 text-white px-2 mr-2 rounded">Edit</a>
                                 <a href="#" onclick = "deleteProduct({{ $category->id }})"
-                                    class="bg-red-500 text-white px-2 rounded">Delete</a>
+                                    class="bg-red-500 hover:bg-red-600 duration-200 text-white px-2 rounded">Delete</a>
                                 <form action="{{ route('product-category.destroy', $category->id) }}" method="post"
                                     id="category-{{ $category->id }}">
                                     @csrf
@@ -72,7 +77,12 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="mt-3">
+            <div class="mt-3 flex items-center justify-between">
+                <div class="text-gray-500">
+                    Showing <strong>{{ $categories->firstItem() }}</strong> to
+                    <strong>{{ $categories->lastItem() }}</strong> out of
+                    <strong>{{ $categories->total() }}</strong> entries
+                </div>
                 {{ $categories->links() }}
             </div>
         </div>

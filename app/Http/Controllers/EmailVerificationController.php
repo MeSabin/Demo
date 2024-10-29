@@ -27,6 +27,6 @@ class EmailVerificationController extends Controller
 
     public function tokenExpired(): View
     {
-        return view('token-expired');
+        return view('admin.auth.token-expiration');
     }
 }
