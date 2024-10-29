@@ -19,8 +19,8 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ProductCategory::with("users")->paginate(2);
-        return view('product-category' , compact('categories'));
+        $categories = ProductCategory::with("users")->paginate(3);
+        return view('admin.product_category.index' , compact('categories'));
     }
 
     /**
@@ -28,7 +28,7 @@ class ProductCategoryController extends Controller
      */
     public function create(): View
     {
-        return view('add-category');
+        return view('admin.product_category.create');
     }
 
     /**
@@ -65,7 +65,7 @@ class ProductCategoryController extends Controller
     public function edit(string $id): View
     {
         $product_category = ProductCategory::find($id);
-        return view('update-category', compact('product_category'));
+        return view('admin.product_category.edit', compact('product_category'));
     }
 
     /**

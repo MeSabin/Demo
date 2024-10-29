@@ -1,4 +1,7 @@
 @extends('main-layout')
+@section('pageName')
+    Products
+@endsection
 @section('content')
     <div class="rounded-md min-h-screen flex justify-center items-center">
         <div class="shadow-lg px-6 py-4 rounded-md">
@@ -87,7 +90,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="py-1 px-4 rounded-md bg-green-600 text-white mt-10">Add
+                <button type="submit" class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white mt-10">Add
                     Category</button>
 
             </form>

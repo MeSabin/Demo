@@ -35,7 +35,7 @@ class UserEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'UserEmailVerification',
+            view: 'admin.auth.email-verification',
         );
     }
 

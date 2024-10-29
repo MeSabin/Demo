@@ -15,11 +15,18 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $products = Product::with('productCategory')->paginate(2);
-   
-        return view('view-products', compact('products'));
+      
+        $products = Product::with('productCategory')->where(function($query) use ($request){
+            if($request->has('search') && !empty($request->search)){
+                    $query->whereLike('name', "%{$request->search}%");
+
+                    $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
+            }
+        })->paginate(10);
+
+        return view('admin.product.index', compact('products'));
     }
 
     /**
@@ -28,7 +35,7 @@ class ProductController extends Controller
     public function create(): View
     {
         $product_categories = ProductCategory::all();
-        return view('add-products', compact('product_categories'));
+        return view('admin.product.create', compact('product_categories'));
     }
 
     /**
@@ -36,9 +43,9 @@ class ProductController extends Controller
      */
     public function store(AddProductRequest $request): RedirectResponse
     {
-        $imageName = NULL;
-        if($request->hasFile('image')) {
-            $imageName = time().'.'.request()->image->getClientOriginalExtension();
+        $imageName = null;  
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . request()->image->getClientOriginalExtension();
             Storage::disk('public')->putFileAs('images/products', $request->image, $imageName);
         }
 
@@ -46,10 +53,9 @@ class ProductController extends Controller
         $data['image'] = $imageName;
         $data['created_by'] = Auth::id();
 
-        
         Product::create($data);
 
-        return redirect()->route('products.index')->with('addProducts', 'Product added successfully');        // dd($product->all());
+        return redirect()->route('products.index')->with('addProducts', 'Product added successfully'); // dd($product->all());
     }
 
     /**
@@ -65,9 +71,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product): View
     {
-        $products= Product::with('productcategory')->find($product->id);
+        $products = Product::with('productcategory')->find($product->id);
         $product_categories = ProductCategory::all();
-        return view('update-products', compact('products', 'product_categories'));
+        return view('admin.product.edit', compact('products', 'product_categories'));
     }
 
     /**
@@ -76,54 +82,36 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, string $id)
     {
         $product = Product::find($id);
+        $data = $request->except('image');
 
-        if($request->hasFile('image')){
-            $path = storage_path('app/public/images/products/'. $product->image);
+        if ($request->hasFile('image')) {
+            $path = storage_path('app/public/images/products/' . $product->image);
 
-            if(file_exists($path)) {
-                @unlink($path);
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            $image = time() . '.' . $request->image->extension();
+            Storage::disk('public')->putFileAs('/images/products/', $request->image, $image);
+
+            $data['image'] = $image;
         }
-        $image =time(). '.' .$request->image->extension();
-        Storage::disk('public')->putFileAs('/images/products/', $request->image, $image);
+        $data['updated_by'] = Auth::id();
 
-        $product->image = $image;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->discount = $request->discount;
-        $product->stock = $request->stock;
-        $product->updated_by = Auth::id();
-        $product->product_category = $request->product_category;
-        $product->update();
+        $product->update($data);
+
+        return redirect()->route('products.index')->with('updateProduct', 'Product updated successfully');
     }
-    else{
-        $productImage = $product->image;
-        $product->image = $productImage;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->discount = $request->discount;
-        $product->stock = $request->stock;
-        $product->updated_by = Auth::id();
-        $product->product_category = $request->product_category;
-        $product->update();
-    }
-    return redirect()->route('products.index')->with('updateProduct', 'Product updated successfully');
-
-
-}
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id): RedirectResponse
     {
-
         $product = Product::find($id);
         $product->delete();
 
-        $path = storage_path('app/public/images/products/'. $product->image);
-        if(file_exists($path)){
+        $path = storage_path('app/public/images/products/' . $product->image);
+        if (file_exists($path)) {
             @unlink($path);
         }
 

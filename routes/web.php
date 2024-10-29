@@ -8,10 +8,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Middleware\ValidUser;
 
 Route::get('/register', function () {
-    return view('register');
+    return view('admin.auth.register');
 })->name('register');
 Route::get('/login', function(){
-    return view('login');
+    return view('admin.auth.login');
 })->name('login');
 
 
