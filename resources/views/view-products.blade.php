@@ -30,11 +30,12 @@
 @section('content')
     <div class="mt-40 px-10">
         <a href="{{ route('products.create') }}" class="rounded bg-green-500 text-white py-2 px-3">Add Category</a>
+
         <div class="mt-10">
             <table class="min-w-full border-2 border-gray-300 rounded-lg">
                 <thead>
                     <tr class="border-2 border-gray-300">
-                        <th class="text-center">ID</th>
+                        <th class="text-center">S.N</th>
                         <th class="text-center">Name</th>
                         <th class="text-center">Category</th>
                         <th class="text-center">Image</th>
@@ -50,9 +51,10 @@
                 </thead>
 
                 <tbody>
+                    @php $i = $products->firstItem(); @endphp
                     @foreach ($products as $product)
                         <tr>
-                            <td class="text-center">{{ $product->id }}</td>
+                            <td class="text-center">{{ $i++ }}</td>
                             <td class="text-center">{{ $product->name }}</td>
                             <td class="text-center">{{ $product->productCategory->name }}</td>
                             <td class="text-center">
@@ -73,19 +75,40 @@
                             <td class="text-center flex items-center justify-center pt-3">
                                 <a href="{{ route('products.edit', $product->id) }}"
                                     class=" px-2 text-white bg-blue-500 rounded-md ">Edit</a>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="post">
+                                <a href="#" onclick="deleteProduct({{ $product->id }});"
+                                    class="bg-red-500 text-white rounded-md px-2 ml-3 ">Delete</a>
+                                <form action="{{ route('products.destroy', $product->id) }}" method="post"
+                                    id ="product-{{ $product->id }}">
                                     @method('DELETE')
                                     @csrf
-                                    <button type="submit"
-                                        class="bg-red-500 text-white rounded-md px-2 ml-3 ">Delete</button>
+                                    {{-- <button type="submit">Delete</button> --}}
                                 </form>
+
+
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
             <div class="mt-4 cursor-pointer">
-                <p class="bg-blue-500"> {{ $products->links() }}</p>
+
+                <div class="flex justify-between items-center">
+
+                    <div>
+                        Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} out of
+                        {{ $products->total() }} entries
+                    </div>
+
+
+                    {{ $products->links() }}
+                </div>
             </div>
         </div>
+        <script>
+            function deleteProduct(id) {
+                if (confirm("Do you really want to delete?")) {
+                    document.getElementById('product-' + id).submit();
+                }
+            }
+        </script>
     @endsection

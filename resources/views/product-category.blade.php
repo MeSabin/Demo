@@ -34,7 +34,7 @@
 
                 <thead>
                     <tr class="border-2 border-gray-300">
-                        <th class="text-center">ID</th>
+                        <th class="text-center">S.N</th>
                         <th class="text-center">Category</th>
                         <th class="text-center">Image</th>
                         <th class="text-center">Added By</th>
@@ -44,9 +44,12 @@
                 </thead>
 
                 <tbody>
+                    @php
+                        $i = $categories->firstItem();
+                    @endphp
                     @foreach ($categories as $category)
                         <tr class="">
-                            <td class="text-center">{{ $category->id }}</td>
+                            <td class="text-center">{{ $i++ }}</td>
                             <td class="text-center">{{ $category->name }}</td>
                             <td class="flex justify-center items-center">
                                 <img class=" text-center w-14 h-14 rounded-full" src="{{ $category->image_path }}"
@@ -56,10 +59,13 @@
                             <td class="pb-2 flex justify-center">
                                 <a href="{{ route('product-category.edit', $category->id) }}"
                                     class="bg-blue-500 text-white px-2 mr-2 rounded">Edit</a>
-                                <form action="{{ route('product-category.destroy', $category->id) }}" method="post">
+                                <a href="#" onclick = "deleteProduct({{ $category->id }})"
+                                    class="bg-red-500 text-white px-2 rounded">Delete</a>
+                                <form action="{{ route('product-category.destroy', $category->id) }}" method="post"
+                                    id="category-{{ $category->id }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-2 rounded">Delete</button>
+                                    {{-- <button type="submit"></button> --}}
                                 </form>
                             </td>
                         </tr>
@@ -71,4 +77,11 @@
             </div>
         </div>
     </div>
+    <script>
+        function deleteProduct(id) {
+            if (confirm("Do you really want to delete?")) {
+                document.querySelector('#category-' + id).submit();
+            }
+        }
+    </script>
 @endsection

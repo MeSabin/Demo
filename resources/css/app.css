@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.pagination {
+   display: flex;
+}
+
+.page-link {
+   display: block;
+   padding:8px;
+}

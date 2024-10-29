@@ -81,7 +81,7 @@ class ProductCategoryController extends Controller
 
         if($request->hasFile('image')){
 
-            $image_path = storage_path('app/public/images/product_categories'. $product_category->image);
+            $image_path = storage_path('app/public/images/product_categories/' . $product_category->image);
             // dd($image_path);
             if(file_exists($image_path)){
                 @unlink($image_path);
@@ -115,7 +115,7 @@ class ProductCategoryController extends Controller
         $product_category = ProductCategory::find($id);
         $product_category->delete();
 
-        $image_path = storage_path('app/public/images/product_categories'. $product_category->image);
+        $image_path = storage_path('app/public/images/product_categories/' . $product_category->image);
         // dd($image_path);
         if(file_exists($image_path)){
             @unlink($image_path);

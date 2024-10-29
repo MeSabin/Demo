@@ -8,7 +8,8 @@
                     <div>
                         <div class="flex flex-col">
                             <label for="">Name:</label>
-                            <input name="name" type="text" class="border py-1 border-gray-900 rounded-md px-2">
+                            <input name="name" type="text" class="border py-1 border-gray-900 rounded-md px-2"
+                                value="{{ old('name') }}">
                             <span class="text-red-600">
                                 @error('name')
                                     {{ $message }}
@@ -17,7 +18,8 @@
                         </div>
                         <div class="flex flex-col mt-3">
                             <label for="">Category:</label>
-                            <select name="product_category" id="" class="border border-gray-700 p-1 rounded-md">
+                            <select name="product_category" id="" class="border border-gray-700 p-1 rounded-md"
+                                value ="{{ old('product_category') }}">
                                 @foreach ($product_categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
@@ -33,8 +35,8 @@
                         </span>
                         <div class="flex flex-col mt-4">
                             <label for="">Description:</label>
-                            <input name="description" type="description"
-                                class="border py-1 border-gray-900 rounded-md px-2">
+                            <input name="description" type="description" class="border py-1 border-gray-900 rounded-md px-2"
+                                value="{{ old('description') }}">
                             <span class="text-red-600">
                                 @error('description')
                                     {{ $message }}
@@ -45,7 +47,8 @@
                     <div class="w-72">
                         <div class="flex flex-col">
                             <label for="">Price:</label>
-                            <input name="price" type="number" class="border py-1 border-gray-900 rounded-md px-2">
+                            <input name="price" type="number" class="border py-1 border-gray-900 rounded-md px-2"
+                                value="{{ old('price') }}">
                             <span class="text-red-600">
                                 @error('price')
                                     {{ $message }}
@@ -54,7 +57,8 @@
                         </div>
                         <div class="flex flex-col mt-3">
                             <label for="">Discount:</label>
-                            <input name="discount" type="number" class="border py-1 border-gray-900 rounded-md px-2">
+                            <input name="discount" type="number" class="border py-1 border-gray-900 rounded-md px-2"
+                                value="{{ old('discount') }}">
                             <span class="text-red-600">
                                 @error('discount')
                                     {{ $message }}
@@ -63,7 +67,8 @@
                         </div>
                         <div class="flex flex-col mt-3">
                             <label for="">Stock:</label>
-                            <input name="stock" type="number" class="border py-1 border-gray-900 rounded-md px-2">
+                            <input name="stock" type="number" class="border py-1 border-gray-900 rounded-md px-2"
+                                value="{{ old('stock') }}">
                             <span class="text-red-600">
                                 @error('stock')
                                     {{ $message }}

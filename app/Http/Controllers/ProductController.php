@@ -17,7 +17,8 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products = Product::with('productCategory')->paginate(5);
+        $products = Product::with('productCategory')->paginate(2);
+   
         return view('view-products', compact('products'));
     }
 
@@ -77,7 +78,7 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if($request->hasFile('image')){
-            $path = storage_path('app/public/images/products'. $product->image);
+            $path = storage_path('app/public/images/products/'. $product->image);
 
             if(file_exists($path)) {
                 @unlink($path);
@@ -117,13 +118,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
-        echo "<script>";
-        echo "alert('hello');";
-        echo "</script>";
+
         $product = Product::find($id);
         $product->delete();
 
-        $path = storage_path('app/public/images/products'. $product->image);
+        $path = storage_path('app/public/images/products/'. $product->image);
         if(file_exists($path)){
             @unlink($path);
         }

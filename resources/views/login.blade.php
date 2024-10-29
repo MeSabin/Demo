@@ -16,7 +16,8 @@
             @csrf
             <div class="flex flex-col pb-6">
                 <label for="">Email:</label>
-                <input name="email" type="text" class="border border-gray-400 w-72 p-1 rounded">
+                <input name="email" type="text" class="border border-gray-400 w-72 p-1 rounded"
+                    value="{{ old('email') }}">
                 <span class="text-red-500">
                     @error('email')
                         {{ $message }}

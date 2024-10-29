@@ -6,7 +6,8 @@
                 @csrf
                 <div class="flex flex-col">
                     <label for="">Name:</label>
-                    <input name="name" type="text" class="border py-1 border-gray-900 rounded-md px-2">
+                    <input name="name" type="text" class="border py-1 border-gray-900 rounded-md px-2"
+                        value="{{ old('name') }}">
                     <span class="text-red-600">
                         @error('name')
                             {{ $message }}
