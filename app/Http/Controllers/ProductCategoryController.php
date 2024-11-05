@@ -17,9 +17,14 @@ class ProductCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request  ): View
     {
-        $categories = ProductCategory::with("users")->paginate(3);
+        $categories = ProductCategory::with("users")->where(function($query) use($request){
+            if($request->has('search') && !empty($request->search)) {
+                $query->whereLike('name', "%{$request->search}%");
+                $query->orWhereHas('users', fn($q) => $q->whereLike('name', "%{$request->search}%"));
+            }
+        })->paginate(4);
         return view('admin.product_category.index' , compact('categories'));
     }
 
@@ -78,32 +83,24 @@ class ProductCategoryController extends Controller
         ]);
 
         $product_category = ProductCategory::find($id);
+        $product_details = $request->except('image');
 
         if($request->hasFile('image')){
 
             $image_path = storage_path('app/public/images/product_categories/' . $product_category->image);
-            // dd($image_path);
             if(file_exists($image_path)){
                 @unlink($image_path);
             }
     
-
             $imageName = time().'.'.$request->image->getClientOriginalExtension();
-            // $request->image->move(storage_path('app/public/images'),$imageName);
-            Storage::disk('public')->putFileAs('images/product_categories', $request->image, $imageName);
+            Storage::disk('public')->putFileAs('images/product_categories/', $request->image, $imageName);
 
-            $product_category->image = $imageName;
-            $product_category->name = $request->name;
-            $product_category->updated_by = Auth::id();
-            $product_category->save();
+            $product_details['image'] = $imageName;
+
         }
-        else{
-            $originalImage = $product_category->image;
-            $product_category->name = $request->name;
-            $product_category->updated_by = Auth::id();
-            $product_category->image = $originalImage;
-            $product_category->save();
-        }
+            $product_details['updated_by'] = Auth::id();
+            $product_category->update($product_details);
+
         return redirect()->route('product-category.index')->with('update_category', 'Category updated successfully');
     }
 

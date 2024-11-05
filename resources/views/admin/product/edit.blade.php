@@ -1,4 +1,4 @@
-@extends('main-layout')
+@extends('admin.dashboard.layout')
 @section('pageName')
     Products
 @endsection
@@ -32,8 +32,8 @@
                                     @endphp
                                     @if ($category->name == $category_name)
                                         @continue
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endif
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -90,8 +90,9 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white mt-10">Add
-                    Category</button>
+                <button type="submit"
+                    class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white mt-10">
+                    Update</button>
 
             </form>
         </div>

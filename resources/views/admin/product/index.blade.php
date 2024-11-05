@@ -1,4 +1,4 @@
-@extends('main-layout')
+@extends('admin.dashboard.layout')
 @section('pageName')
     Products
 @endsection
@@ -33,15 +33,22 @@
     <div class="mt-40 px-10">
         <div class="flex justify-between items-center">
             <div>
-                <a href="{{ route('products.create') }}" class="rounded bg-green-500 text-white py-2 px-3">Add Category</a>
+                <a href="{{ route('products.create') }}"
+                    class="rounded bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Product</a>
             </div>
             <div class="border border-gray-500 rounded-md">
-                <form action="{{ route('products.index') }}" method="GET" class="mb-0 py-1">
-                    @csrf
-                    <input class="py-1 px-3 focus:outline-none" type="text" name="search" placeholder="Search products."
-                        value="{{ request('search') }}">
-                    <button type="submit"
-                        class="text-gray-600 pr-1 border-l-2 font-bold border-gray-500 pl-1 ">Search</button>
+                <form action="{{ route('products.index') }}" method="GET" class="mb-0 py-1" id="form">
+                    <div class="flex items-center relative">
+                        <input class="py-1 px-3 focus:outline-none" type="text" name="search"
+                            placeholder="Search products." value="{{ request('search') }}" id="search_bar">
+                        <a href="/products"
+                            class="hidden hover:bg-gray-300 p-1 rounded-full mr-1 absolute right-16 duration-200"
+                            id="cancel">
+                            <img src="{{ asset('images/close.png') }}" alt="Image" class="h-4 w-4">
+                        </a>
+                        <button type="submit"
+                            class="text-gray-600 pr-1 border-l-2 font-bold border-gray-600 pl-1 hover:text-gray-500 duration-200 ">Search</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -118,10 +125,11 @@
                 </div>
             </div>
         </div>
+        <script src="{{ asset('js/searchCancel.js') }}"></script>
         <script>
             function deleteProduct(id) {
-                if (confirm("Do you really want to delete?")) {
-                    document.getElementById('product-' + id).submit();
+                if (confirm('Do you really want to delete this?')) {
+                    document.querySelector('#product-' + id).submit();
                 }
             }
         </script>

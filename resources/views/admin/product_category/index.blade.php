@@ -1,4 +1,4 @@
-@extends('main-layout')
+@extends('admin.dashboard.layout')
 @section('pageName')
     Product Categories
 @endsection
@@ -31,8 +31,27 @@
         </x-alert>
     @endif
     <div class="mt-40 px-10">
-        <a href="{{ route('product-category.create') }}"
-            class="rounded bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Category</a>
+        <div class="flex justify-between items-center">
+            <div>
+                <a href="{{ route('product-category.create') }}"
+                    class="rounded  bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Category</a>
+            </div>
+            <div class="border border-gray-500 rounded-md">
+                <form action="{{ route('product-category.index') }}" method="GET" class="mb-0 py-1">
+                    <div class="flex items-center relative">
+                        <input class="py-1 px-3 focus:outline-none" type="text" name="search"
+                            placeholder="Search products." value="{{ request('search') }}" id="search_bar">
+                        <a href="/product-category"
+                            class="hidden hover:bg-gray-300 p-1 rounded-full mr-1 absolute right-16 duration-200"
+                            id="cancel">
+                            <img src="{{ asset('images/close.png') }}" alt="Image" class="h-4 w-4">
+                        </a>
+                        <button type="submit"
+                            class="text-gray-600 pr-1 border-l-2 font-bold border-gray-600 pl-1 hover:text-gray-500 duration-200">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="mt-10">
             <table class="min-w-full bg-gray-50 rounded-md overflow-hidden">
 
@@ -94,4 +113,5 @@
             }
         }
     </script>
+    <script src="{{ asset('js/searchCancel.js') }}"></script>
 @endsection

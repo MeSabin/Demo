@@ -24,7 +24,7 @@ class ProductController extends Controller
 
                     $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
             }
-        })->paginate(10);
+        })->paginate(4);
 
         return view('admin.product.index', compact('products'));
     }

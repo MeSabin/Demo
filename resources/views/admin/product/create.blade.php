@@ -1,4 +1,4 @@
-@extends('main-layout')
+@extends('admin.dashboard.layout')
 @section('pageName')
     Products
 @endsection
@@ -80,8 +80,8 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white mt-10">Add
-                    Category</button>
+                <button type="submit" class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white mt-10">
+                    Submit</button>
 
             </form>
         </div>

@@ -1,4 +1,4 @@
-@extends('main-layout')
+@extends('admin.dashboard.layout')
 @section('pageName')
     Product Categories
 @endsection
@@ -26,8 +26,8 @@
                     @enderror
                 </span>
                 <button type="submit"
-                    class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white w-full mt-10">Add
-                    Category</button>
+                    class="py-1 px-4 rounded-md bg-green-500 hover:bg-green-600 duration-200 text-white w-full mt-10">
+                    Submit</button>
             </form>
         </div>
     </div>
