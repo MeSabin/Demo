@@ -30,7 +30,7 @@
     </x-alert>
 @endif
 @section('content')
-    <div class="mt-40 px-10">
+    <div class="w-full px-10">
         <div class="flex justify-between items-center">
             <div>
                 <a href="{{ route('products.create') }}"
@@ -125,12 +125,14 @@
                 </div>
             </div>
         </div>
-        <script src="{{ asset('js/searchCancel.js') }}"></script>
-        <script>
-            function deleteProduct(id) {
-                if (confirm('Do you really want to delete this?')) {
-                    document.querySelector('#product-' + id).submit();
-                }
+    </div>
+
+    <script src="{{ asset('js/searchCancel.js') }}"></script>
+    <script>
+        function deleteProduct(id) {
+            if (confirm('Do you really want to delete this?')) {
+                document.querySelector('#product-' + id).submit();
             }
-        </script>
-    @endsection
+        }
+    </script>
+@endsection

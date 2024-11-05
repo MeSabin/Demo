@@ -30,7 +30,7 @@
             </div>
         </x-alert>
     @endif
-    <div class="mt-40 px-10">
+    <div class="w-full px-10 ">
         <div class="flex justify-between items-center">
             <div>
                 <a href="{{ route('product-category.create') }}"
@@ -55,7 +55,7 @@
         <div class="mt-10">
             <table class="min-w-full bg-gray-50 rounded-md overflow-hidden">
 
-                <thead class="bg-gray-600 text-white ">
+                <thead class="bg-gray-600 text-white">
                     <tr class="border-gray-300">
                         <th class="text-center py-2">S.N</th>
                         <th class="text-center py-2">Category</th>

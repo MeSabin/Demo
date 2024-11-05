@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 use App\Http\Middleware\ValidUser;
 
 Route::get('/register', function () {
@@ -25,3 +26,4 @@ Route::get('/token-expired', [EmailVerificationController::class,'tokenExpired']
 
 Route::resource('product-category', ProductCategoryController::class)->names('product-category')->middleware(['auth']);
 Route::resource('products', ProductController::class)->names('products')->middleware(['auth']);
+Route::resource('/roles', RoleController::class)->names('roles')->middleware(['auth']);
