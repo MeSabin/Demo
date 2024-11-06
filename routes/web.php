@@ -14,6 +14,10 @@ Route::get('/register', function () {
 Route::get('/login', function(){
     return view('admin.auth.login');
 })->name('login');
+Route::get('/form', function(){
+    return view('admin.partials.form');
+})->name('form');
+Route::get('/', function () { return view('auth.login'); })->middleware('guest');
 
 
 Route::post('/registerUser', [UserController::class, 'registerUser'])->name('registerUser');
