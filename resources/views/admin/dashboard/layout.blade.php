@@ -42,6 +42,16 @@
                         <a href="{{ route('products.index') }}"
                             class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('products*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">Products</a>
                     </li>
+                    <li>
+                        <a href="{{ route('roles.index') }}"
+                            class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('roles*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">Manage
+                            Roles</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('user_role.index') }}"
+                            class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('user_role*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">User
+                            Role</a>
+                    </li>
                 </ul>
             </nav>
         </aside>
@@ -69,7 +79,7 @@
 
 
 
-        <div class="mt-[80px] ml-[256px]">
+        <div class="ml-[256px] mt-10 min-h-screen flex justify-center items-center">
             @yield('content')
         </div>
 

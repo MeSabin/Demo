@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductCategoryRequest;
 use Illuminate\Contracts\View\View;
+use App\Helpers\RolePermissionHelper;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\User;
@@ -19,6 +20,9 @@ class ProductCategoryController extends Controller
      */
     public function index(Request $request  ): View
     {
+        if(!RolePermissionHelper::checkPermission('list product category')){
+            abort(403);
+        }
         $categories = ProductCategory::with("users")->where(function($query) use($request){
             if($request->has('search') && !empty($request->search)) {
                 $query->whereLike('name', "%{$request->search}%");
@@ -32,7 +36,10 @@ class ProductCategoryController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(): View
-    {
+    {   
+        if(!RolePermissionHelper::checkPermission('create product category')){
+            abort(403);
+        }
         return view('admin.product_category.create');
     }
 
@@ -41,6 +48,9 @@ class ProductCategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request): RedirectResponse    
     {
+        if(!RolePermissionHelper::checkPermission('create product category')){
+            abort(403);
+        }
         // $path = $request->image->store('image', 'public');
         if($request->hasFile('image')){
             $imageName = time().'.'.request()->image->getClientOriginalExtension();
@@ -69,6 +79,9 @@ class ProductCategoryController extends Controller
      */
     public function edit(string $id): View
     {
+        if(!RolePermissionHelper::checkPermission('edit product category')){
+            abort(403);
+        }
         $product_category = ProductCategory::find($id);
         return view('admin.product_category.edit', compact('product_category'));
     }
@@ -78,6 +91,9 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('edit product category')){
+            abort(403);
+        }
         $request->validate([
             'name' =>'required',
         ]);
@@ -109,6 +125,9 @@ class ProductCategoryController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('delete product category')){
+            abort(403);
+        }
         $product_category = ProductCategory::find($id);
         $product_category->delete();
 

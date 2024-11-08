@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Helpers\RolePermissionHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse as HttpFoundationRedirectResponse;
 
 class UserController extends Controller
@@ -47,6 +48,10 @@ class UserController extends Controller
 
 
     public function loginUser(LoginRequest $request): RedirectResponse | View {
+
+        if(!RolePermissionHelper::checkPermission('view dashboard')){
+            abort(403);
+         }
        $credentials = $request->except(['_token']);
 
 
@@ -70,6 +75,7 @@ class UserController extends Controller
             return view('admin.auth.verification-notice', ['email'=>$request->email]);
         }
         else{
+            
             return redirect()->route('dashboard');
         }
     }
@@ -80,6 +86,9 @@ class UserController extends Controller
 
     public function viewDashboard():View 
     {
+        if(!RolePermissionHelper::checkPermission('view dashboard')){
+            abort(403);
+        }
         return view('admin.dashboard.index');
     }
 
