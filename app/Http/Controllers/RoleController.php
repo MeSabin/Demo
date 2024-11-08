@@ -10,6 +10,7 @@ use App\Models\RolePermission;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Helpers\RolePermissionHelper;
 
 class RoleController extends Controller
 {
@@ -18,7 +19,10 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::with('permissions')->paginate();
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
+        $roles = Role::with('permissions')->paginate(3);
         // return $roles;
         return view('admin.role.index', compact('roles'));
     }
@@ -28,6 +32,9 @@ class RoleController extends Controller
      */
     public function create()
     {
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
         $permissions = Permission::orderBy('group', 'ASC')->get();
         $groupedPermissions = $permissions->groupBy('group');  
         // return $groupedPermissions;
@@ -39,6 +46,9 @@ class RoleController extends Controller
      */
     public function store(AssignRoleRequest $request)
     {
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
        $role = Role::create([
             'name' => $request->name,
         ]);
@@ -55,8 +65,6 @@ class RoleController extends Controller
     //         $role_permission->permission_id = $permission;
     //         $role_permission->save();
     //     }
-    //    $data = $request->all();
-    //    dd($data);
 
     }
 
@@ -65,7 +73,9 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
     }
 
     /**
@@ -73,8 +83,11 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
         $role = Role::with('permissions')->find( $role->id );
-
+        // return $role;
         $update = 'update_form';
      
         $permissions = Permission::orderBy('group', 'ASC')->get();
@@ -88,8 +101,13 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
+
         $role = Role::find( $role->id );
         $role->name = $request->name;
+        $role->save();
         $permissions = $request->input('permissions');
         $role->permissions()->sync($permissions);
 
@@ -101,6 +119,9 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
         $roles = Role::find( $role->id );
         $permissions =  $roles->permissions;
         $assigned_permissions = [];

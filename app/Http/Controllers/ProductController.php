@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Helpers\RolePermissionHelper;
 use App\Http\Requests\AddProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
@@ -15,18 +17,30 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
+
+        $user = Auth::user();
+        $role = $user->userRole->role;
+        // return $role;
+        $permissions = $role->permissions()->pluck('permissions.title')->toArray();
+        return $permissions;
+        // return in_array($permission, $permissions);
+        if(!RolePermissionHelper::checkPermission("list product")){
+            abort(403);
+        }
+
+        
       
-        $products = Product::with('productCategory')->where(function($query) use ($request){
-            if($request->has('search') && !empty($request->search)){
-                    $query->whereLike('name', "%{$request->search}%");
+        // $products = Product::with('productCategory')->where(function($query) use ($request){
+        //     if($request->has('search') && !empty($request->search)){
+        //             $query->whereLike('name', "%{$request->search}%");
 
-                    $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
-            }
-        })->paginate(4);
+        //             $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
+        //     }
+        // })->paginate(4);
 
-        return view('admin.product.index', compact('products'));
+        // return view('admin.product.index', compact('products'));
     }
 
     /**
@@ -34,6 +48,10 @@ class ProductController extends Controller
      */
     public function create(): View
     {
+        if(!RolePermissionHelper::checkPermission('create product')){
+            abort(403);
+        }
+
         $product_categories = ProductCategory::all();
         return view('admin.product.create', compact('product_categories'));
     }
@@ -43,6 +61,10 @@ class ProductController extends Controller
      */
     public function store(AddProductRequest $request): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('create_product')){
+            abort(403);
+        }
+
         $imageName = null;  
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . request()->image->getClientOriginalExtension();
@@ -71,6 +93,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product): View
     {
+        if(!RolePermissionHelper::checkPermission('edit product')){
+            abort(403);
+        }
         $products = Product::with('productcategory')->find($product->id);
         $product_categories = ProductCategory::all();
         return view('admin.product.edit', compact('products', 'product_categories'));
@@ -107,6 +132,9 @@ class ProductController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('delete product')){
+            abort(403);
+        }
         $product = Product::find($id);
         $product->delete();
 

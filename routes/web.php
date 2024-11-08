@@ -6,6 +6,7 @@ use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Middleware\ValidUser;
 
 Route::get('/register', function () {
@@ -14,10 +15,7 @@ Route::get('/register', function () {
 Route::get('/login', function(){
     return view('admin.auth.login');
 })->name('login');
-Route::get('/form', function(){
-    return view('admin.partials.form');
-})->name('form');
-Route::get('/', function () { return view('auth.login'); })->middleware('guest');
+
 
 
 Route::post('/registerUser', [UserController::class, 'registerUser'])->name('registerUser');
@@ -31,3 +29,4 @@ Route::get('/token-expired', [EmailVerificationController::class,'tokenExpired']
 Route::resource('product-category', ProductCategoryController::class)->names('product-category')->middleware(['auth']);
 Route::resource('products', ProductController::class)->names('products')->middleware(['auth']);
 Route::resource('/roles', RoleController::class)->names('roles')->middleware(['auth']);
+Route::resource('/user-role', UserRoleController::class)->names('user_role')->middleware(['auth']);

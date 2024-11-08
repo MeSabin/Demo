@@ -66,9 +66,11 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="text-gray-500 mt-8">
-                showing <strong>{{ $roles->firstItem() }}</strong> to <strong>{{ $roles->lastItem() }} </strong> of
-                <strong>{{ $roles->total() }}</strong> entries
+            <div class="text-gray-500 mt-8 flex items-center justify-between">
+                <div>
+                    showing <strong>{{ $roles->firstItem() }}</strong> to <strong>{{ $roles->lastItem() }} </strong> of
+                    <strong>{{ $roles->total() }}</strong> entries
+                </div>
                 {{ $roles->links() }}
             </div>
         </div>
