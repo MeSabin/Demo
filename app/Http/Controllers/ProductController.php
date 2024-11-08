@@ -23,8 +23,6 @@ class ProductController extends Controller
         if(!RolePermissionHelper::checkPermission("list product")){
             abort(403);
         }
-
-        
       
         $products = Product::with('productCategory')->where(function($query) use ($request){
             if($request->has('search') && !empty($request->search)){
