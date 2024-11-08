@@ -20,27 +20,21 @@ class ProductController extends Controller
     public function index(Request $request)
     {
 
-        $user = Auth::user();
-        $role = $user->userRole->role;
-        // return $role;
-        $permissions = $role->permissions()->pluck('permissions.title')->toArray();
-        return $permissions;
-        // return in_array($permission, $permissions);
         if(!RolePermissionHelper::checkPermission("list product")){
             abort(403);
         }
 
         
       
-        // $products = Product::with('productCategory')->where(function($query) use ($request){
-        //     if($request->has('search') && !empty($request->search)){
-        //             $query->whereLike('name', "%{$request->search}%");
+        $products = Product::with('productCategory')->where(function($query) use ($request){
+            if($request->has('search') && !empty($request->search)){
+                    $query->whereLike('name', "%{$request->search}%");
 
-        //             $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
-        //     }
-        // })->paginate(4);
+                    $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
+            }
+        })->paginate(4);
 
-        // return view('admin.product.index', compact('products'));
+        return view('admin.product.index', compact('products'));
     }
 
     /**
