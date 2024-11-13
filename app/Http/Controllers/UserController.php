@@ -49,9 +49,6 @@ class UserController extends Controller
 
     public function loginUser(LoginRequest $request): RedirectResponse | View {
 
-        if(!RolePermissionHelper::checkPermission('view dashboard')){
-            abort(403);
-         }
        $credentials = $request->except(['_token']);
 
 
@@ -80,11 +77,11 @@ class UserController extends Controller
         }
     }
     else{
-        return redirect()->back();
+        return redirect()->back()->with('loginError', 'Your credentials donot match');
     }
     }
 
-    public function viewDashboard():View 
+    public function viewDashboard() : View 
     {
         if(!RolePermissionHelper::checkPermission('view dashboard')){
             abort(403);
@@ -93,7 +90,7 @@ class UserController extends Controller
     }
 
 
-    public function Logout(Request $request):RedirectResponse
+    public function Logout(Request $request) : RedirectResponse
      {
         Auth::logout();
         $request->session()->regenerate();

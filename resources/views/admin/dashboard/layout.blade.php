@@ -29,29 +29,43 @@
             </div>
             <nav>
                 <ul class="px-2 rounded">
-                    <li>
-                        <a href="{{ route('dashboard') }}"
-                            class="{{ Route::is('dashboard') ? 'active' : '' }} py-2 pl-8 hover:bg-gray-600 hover:text-white hover:duration-200 rounded font-semibold text-base block">Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('product-category.index') }}"
-                            class=" font-semibold text-base pl-8 mt-4 {{ Route::is('product-category*') ? 'active' : '' }} py-2 rounded block hover:bg-gray-600 hover:text-white hover:duration-200 ">Product
-                            Category</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('products.index') }}"
-                            class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('products*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">Products</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('roles.index') }}"
-                            class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('roles*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">Manage
-                            Roles</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('user_role.index') }}"
-                            class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('user_role*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">User
-                            Role</a>
-                    </li>
+                    @if (RPH::checkpermission('view dashboard'))
+                        <li>
+                            <a href="{{ route('dashboard') }}"
+                                class="{{ Route::is('dashboard') ? 'active' : '' }} py-2 pl-8 hover:bg-gray-600 hover:text-white hover:duration-200 rounded font-semibold text-base block">Dashboard</a>
+                        </li>
+                    @endif
+
+                    @if (RPH::checkPermission('view product category'))
+                        <li>
+                            <a href="{{ route('product-category.index') }}"
+                                class=" font-semibold text-base pl-8 mt-4 {{ Route::is('product-category*') ? 'active' : '' }} py-2 rounded block hover:bg-gray-600 hover:text-white hover:duration-200 ">Product
+                                Category</a>
+                        </li>
+                    @endif
+
+                    @if (RPH::checkPermission('view product'))
+                        <li>
+                            <a href="{{ route('products.index') }}"
+                                class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('products*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">Products</a>
+                        </li>
+                    @endif
+
+                    @if (RPH::checkPermission('manage role'))
+                        <li>
+                            <a href="{{ route('roles.index') }}"
+                                class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('roles*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">Manage
+                                Roles</a>
+                        </li>
+                    @endif
+
+                    @if (RPH::checkPermission('manage role'))
+                        <li>
+                            <a href="{{ route('user_role.index') }}"
+                                class="font-semibold text-base pl-8 mt-4 py-2 rounded {{ Route::is('user_role*') ? 'active' : '' }} block hover:bg-gray-600 hover:text-white hover:duration-300">User
+                                Role</a>
+                        </li>
+                    @endif
                 </ul>
             </nav>
         </aside>
@@ -84,7 +98,6 @@
         </div>
 
     </div>
-    <script src="{{ asset('js/profileModal.js') }}"></script>
 </body>
-
+<script src="{{ asset('js/profileModal.js') }}"></script>
 </html>

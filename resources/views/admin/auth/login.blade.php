@@ -6,8 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
     @vite('resources/css/app.css')
 </head>
+@if (session('loginError'))
+    <x-alert>
+        <div id="alert"
+            class="bg-white absolute right-5 top-5 z-50 py-3 px-6 rounded-md border-2 border-red-500 flex flex-row items-center ">
+            <img src="{{ asset('images/error.png') }}" alt="Image not found" class="w-8 mr-3">
+            <p class="text-red-500 font-bold">{{ session('loginError') }}</p>
+        </div>
+    </x-alert>
+@endif
 
 <body class="flex justify-center items-center min-h-screen">
     <div class=" shadow-lg rounded p-6">

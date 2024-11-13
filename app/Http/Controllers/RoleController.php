@@ -17,7 +17,7 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);
@@ -30,7 +30,7 @@ class RoleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create():View
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);
@@ -44,7 +44,7 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AssignRoleRequest $request)
+    public function store(AssignRoleRequest $request): RedirectResponse
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);
@@ -71,7 +71,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(Role $role): void
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);
@@ -81,7 +81,7 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit(Role $role): View
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);
@@ -99,7 +99,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);
@@ -117,7 +117,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role): RedirectResponse
     {
         if(!RolePermissionHelper::checkPermission('manage role')){
             abort(403);

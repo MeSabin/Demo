@@ -20,7 +20,7 @@ class ProductCategoryController extends Controller
      */
     public function index(Request $request  ): View
     {
-        if(!RolePermissionHelper::checkPermission('list product category')){
+        if(!RolePermissionHelper::checkPermission('view product category')){
             abort(403);
         }
         $categories = ProductCategory::with("users")->where(function($query) use($request){

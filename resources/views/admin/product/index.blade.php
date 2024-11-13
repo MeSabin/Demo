@@ -2,6 +2,8 @@
 @section('pageName')
     Products
 @endsection
+
+@section('content')
 @if (session('addProducts'))
     <x-alert>
         <div id="alert"
@@ -29,13 +31,16 @@
         </div>
     </x-alert>
 @endif
-@section('content')
     <div class="w-full px-10">
         <div class="flex justify-between items-center">
-            <div>
-                <a href="{{ route('products.create') }}"
-                    class="rounded bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Product</a>
-            </div>
+
+            @if (RPH::checkPermission('create product'))
+                <div>
+                    <a href="{{ route('products.create') }}"
+                        class="rounded bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Product</a>
+                </div>
+            @endif
+
             <div class="border border-gray-500 rounded-md">
                 <form action="{{ route('products.index') }}" method="GET" class="mb-0 py-1" id="form">
                     <div class="flex items-center relative">
@@ -66,7 +71,9 @@
                         <th class="text-center py-2">Created_by</th>
                         <th class="text-center py-2">Stock</th>
                         <th class="text-center py-2">Status</th>
-                        <th class="text-center py-2">Action</th>
+                        @if (RPH::checkPermission('edit product') && RPH::checkPermission('delete product'))
+                            <th class="text-center py-2">Action</th>
+                        @endif
                     </tr>
                 </thead>
 
@@ -76,7 +83,10 @@
                         <tr class="hover:bg-gray-100">
                             <td class="text-center">{{ $i++ }}.</td>
                             <td class="text-center">{{ $product->name }}</td>
-                            <td class="text-center">{{ $product->productCategory?->name }}</td>
+                            <td class="text-center">{{ $product->productCategory->name }}</td>
+                            {{-- ?-> checks if the $product->productCategory is null and if null returns the null
+                                but if ?-> not used and $product->productCategory is null, it will throw error
+                            --}}
                             <td class="text-center">
                                 <img src="{{ $product->image_product }}" alt="Image not found"
                                     class="w-12 h-12 rounded-full">
@@ -88,24 +98,24 @@
                             @else
                                 <td class="text-center">{{ $product->discount }}%</td>
                             @endif
-                            <td class="text-center">{{ $product->created_by }}</td>
+                            <td class="text-center">{{ $product->users->name }}</td>
                             {{-- <td class="text-center">{{ $product->updated_by }}</td> --}}
                             <td class="text-center">{{ $product->stock }}</td>
                             <td class="text-center">{{ $product->status }}</td>
-                            <td class="text-center flex items-center justify-center pt-3">
-                                <a href="{{ route('products.edit', $product->id) }}"
-                                    class=" px-2 text-white bg-blue-500 hover:bg-blue-600 duration-200 rounded-md ">Edit</a>
-                                <a href="#" onclick="deleteProduct({{ $product->id }});"
-                                    class="bg-red-500 hover:bg-red-600 duration-200 text-white rounded-md px-2 ml-3 ">Delete</a>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="post"
-                                    id ="product-{{ $product->id }}">
-                                    @method('DELETE')
-                                    @csrf
-                                    {{-- <button type="submit">Delete</button> --}}
-                                </form>
-
-
-                            </td>
+                            @if (RPH::checkPermission('edit product') && RPH::checkPermission('delete product'))
+                                <td class="text-center flex items-center justify-center pt-3">
+                                    <a href="{{ route('products.edit', $product->id) }}"
+                                        class=" px-2 text-white bg-blue-500 hover:bg-blue-600 duration-200 rounded-md ">Edit</a>
+                                    <a href="#" onclick="deleteProduct({{ $product->id }});"
+                                        class="bg-red-500 hover:bg-red-600 duration-200 text-white rounded-md px-2 ml-3 ">Delete</a>
+                                    <form action="{{ route('products.destroy', $product->id) }}" method="post"
+                                        id ="product-{{ $product->id }}">
+                                        @method('DELETE')
+                                        @csrf
+                                        {{-- <button type="submit">Delete</button> --}}
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

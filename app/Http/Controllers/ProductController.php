@@ -17,11 +17,13 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-
-        if(!RolePermissionHelper::checkPermission("list product")){
+        $disableButtons = null;
+        if(!RolePermissionHelper::checkPermission("view product")){
             abort(403);
+
+            $disableButtons = 'disable';
         }
       
         $products = Product::with('productCategory')->where(function($query) use ($request){
@@ -32,7 +34,7 @@ class ProductController extends Controller
             }
         })->paginate(4);
 
-        return view('admin.product.index', compact('products'));
+        return view('admin.product.index', compact('products', 'disableButtons'));
     }
 
     /**
@@ -53,7 +55,7 @@ class ProductController extends Controller
      */
     public function store(AddProductRequest $request): RedirectResponse
     {
-        if(!RolePermissionHelper::checkPermission('create_product')){
+        if(!RolePermissionHelper::checkPermission('create product')){
             abort(403);
         }
 
@@ -96,8 +98,11 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, string $id)
+    public function update(UpdateProductRequest $request, string $id): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('edit product')){
+            abort(403);
+        }
         $product = Product::find($id);
         $data = $request->except('image');
 

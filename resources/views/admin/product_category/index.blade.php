@@ -32,10 +32,12 @@
     @endif
     <div class="w-full px-10 ">
         <div class="flex justify-between items-center">
-            <div>
-                <a href="{{ route('product-category.create') }}"
-                    class="rounded  bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Category</a>
-            </div>
+            @if (RPH::checkPermission('create product category'))
+                <div>
+                    <a href="{{ route('product-category.create') }}"
+                        class="rounded  bg-green-500 hover:bg-green-600 duration-200 text-white py-2 px-3">Add Category</a>
+                </div>
+            @endif
             <div class="border border-gray-500 rounded-md">
                 <form action="{{ route('product-category.index') }}" method="GET" class="mb-0 py-1">
                     <div class="flex items-center relative">
@@ -61,7 +63,9 @@
                         <th class="text-center py-2">Category</th>
                         <th class="text-center py-2">Image</th>
                         <th class="text-center py-2">Added By</th>
-                        <th class="text-center py-2">Action</th>
+                        @if (RPH::checkPermission('edit product category') && RPH::checkPermission('delete product category'))
+                            <th class="text-center py-2">Action</th>
+                        @endif
 
                     </tr>
                 </thead>
@@ -80,18 +84,20 @@
                                     alt="Image not found">
                             </td>
                             <td class="text-center">{{ $category->users->name }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('product-category.edit', $category->id) }}"
-                                    class="bg-blue-500 hover:bg-blue-600 duration-200 text-white px-2 mr-2 rounded">Edit</a>
-                                <a href="#" onclick = "deleteProduct({{ $category->id }})"
-                                    class="bg-red-500 hover:bg-red-600 duration-200 text-white px-2 rounded">Delete</a>
-                                <form action="{{ route('product-category.destroy', $category->id) }}" method="post"
-                                    id="category-{{ $category->id }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    {{-- <button type="submit"></button> --}}
-                                </form>
-                            </td>
+                            @if (RPH::checkPermission('edit product category') && RPH::checkPermission('delete product category'))
+                                <td class="text-center">
+                                    <a href="{{ route('product-category.edit', $category->id) }}"
+                                        class="bg-blue-500 hover:bg-blue-600 duration-200 text-white px-2 mr-2 rounded">Edit</a>
+                                    <a href="#" onclick = "deleteProduct({{ $category->id }})"
+                                        class="bg-red-500 hover:bg-red-600 duration-200 text-white px-2 rounded">Delete</a>
+                                    <form action="{{ route('product-category.destroy', $category->id) }}" method="post"
+                                        id="category-{{ $category->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        {{-- <button type="submit"></button> --}}
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

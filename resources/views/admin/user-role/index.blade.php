@@ -57,6 +57,7 @@
         </div>
     </div>
 
+    {{-- <script src="{{ asset('js/assignRoleToUserAjax.js') }}"></script> --}}
     <script>
         $(document).ready(function() {
             $(document).on('change', '.user-role', function() {
@@ -65,9 +66,9 @@
 
                     let user_id = $(this).data('user-id');
                     let role_id = $(this).val();
-                    let role = this;
+                    // let role = this;
 
-                    console.log('Uder id:' + user_id);
+                    console.log('User id:' + user_id);
                     console.log('Role id:' + role_id);
                     $.ajax({
                         url: "{{ route('user_role.store') }}",
@@ -83,9 +84,9 @@
                             console.log('data properly fetched')
                             console.log(response.message);
                             $('#user-role-assign').html(response.message);
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 $('#user-role-assign').html('');
-                            },3000)
+                            }, 3000)
                         },
                         error: function(error) {
                             console.log('Something error while storing the data through ajax');

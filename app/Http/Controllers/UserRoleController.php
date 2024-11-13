@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role ;
 use App\Models\UserRole;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Casts\Json;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
 class UserRoleController extends Controller
@@ -14,9 +18,12 @@ class UserRoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
        
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
         $users = User::with('userRole.role')->paginate(10);
         
         // // return $users;
@@ -38,11 +45,18 @@ class UserRoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse | Response
     {
-        // $validator = Validator::make([
-        //     'name'=> $request->name,
-        // ]);
+        if(!RolePermissionHelper::checkPermission('manage role')){
+            abort(403);
+        }
+        $validator = Validator::make($request->all(), [
+            'user_id'=> 'required',
+            'role_id'=> 'required',
+        ]);
+        if($validator->fails()){
+            return response($validator->message(), 200);
+        }
 
         // $user =  User::with('userRole.role')->find($request->user_id); 
         
