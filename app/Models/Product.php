@@ -29,4 +29,7 @@ class Product extends Model
     public function productcategory(): BelongsTo{
         return $this->belongsTo(ProductCategory::class, 'product_category');
     }
+    public function users(): BelongsTo {
+        return $this->belongsTo(User::class,'created_by');
+    }
 }

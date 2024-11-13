@@ -16,7 +16,8 @@
             @csrf
             <div class="flex flex-col pb-6">
                 <label for="">Name:</label>
-                <input name="name" type="text" class="border border-gray-400 w-72 p-1 rounded">
+                <input name="name" type="text" class="border border-gray-400 w-72 p-1 rounded"
+                    value="{{ old('name') }}">
                 <span class="text-red-500">
                     @error('name')
                         {{ $message }}
@@ -25,7 +26,8 @@
             </div>
             <div class="flex flex-col pb-6">
                 <label for="">Email:</label>
-                <input name="email" type="text" class="border border-gray-400 p-1 rounded">
+                <input name="email" type="text" class="border border-gray-400 p-1 rounded"
+                    value="{{ old('email') }}">
                 <span class="text-red-500">
                     @error('email')
                         {{ $message }}
@@ -56,7 +58,7 @@
                     class="absolute right-3 top-8 h-5 w-5 cursor-pointer">
             </div>
             <button type="submit"
-                class="bg-green-600 text-white text-base w-full rounded p-1 cursor-pointer">Register</button>
+                class="bg-green-500 hover:bg-green-600 duration-200 text-white text-base w-full rounded p-1 cursor-pointer">Register</button>
             <div class="flex justify-center mt-2">
                 <a href="{{ route('login') }}" class="text-blue-500 text-sm text-center">Login</a>
             </div>

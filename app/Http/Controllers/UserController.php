@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Helpers\RolePermissionHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse as HttpFoundationRedirectResponse;
 
 class UserController extends Controller
@@ -36,17 +37,18 @@ class UserController extends Controller
         ];
         Mail::to($request->email)->send(new UserEmail($details));
         // return redirect()->back()->with('registerSuccess', 'User registered successfully');
-        return view('verificationNotice', ['email'=>$request->email]);
+        return view('admin.auth.verification-notice', ['email'=>$request->email]);
     }
     catch(\Exception $e){
         Log::error($e->getMessage());
-        return view('verificationNotice', ['email'=>$request->email]);
+        return view('admin.auth.verification-notice', ['email'=>$request->email]);
     }
 
     }
 
 
     public function loginUser(LoginRequest $request): RedirectResponse | View {
+
        $credentials = $request->except(['_token']);
 
 
@@ -67,24 +69,28 @@ class UserController extends Controller
 
             Mail::to($request->email)->send(new UserEmail($details));
 
-            return view('verificationNotice', ['email'=>$request->email]);
+            return view('admin.auth.verification-notice', ['email'=>$request->email]);
         }
         else{
+            
             return redirect()->route('dashboard');
         }
     }
     else{
-        return redirect()->back();
+        return redirect()->back()->with('loginError', 'Your credentials donot match');
     }
     }
 
-    public function viewDashboard():View 
+    public function viewDashboard() : View 
     {
-        return view('dashboard');
+        if(!RolePermissionHelper::checkPermission('view dashboard')){
+            abort(403);
+        }
+        return view('admin.dashboard.index');
     }
 
 
-    public function Logout(Request $request):RedirectResponse
+    public function Logout(Request $request) : RedirectResponse
      {
         Auth::logout();
         $request->session()->regenerate();

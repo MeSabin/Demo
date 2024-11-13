@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductCategoryRequest;
 use Illuminate\Contracts\View\View;
+use App\Helpers\RolePermissionHelper;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\User;
@@ -17,18 +18,29 @@ class ProductCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request  ): View
     {
-        $categories = ProductCategory::with("users")->paginate(2);
-        return view('product-category' , compact('categories'));
+        if(!RolePermissionHelper::checkPermission('view product category')){
+            abort(403);
+        }
+        $categories = ProductCategory::with("users")->where(function($query) use($request){
+            if($request->has('search') && !empty($request->search)) {
+                $query->whereLike('name', "%{$request->search}%");
+                $query->orWhereHas('users', fn($q) => $q->whereLike('name', "%{$request->search}%"));
+            }
+        })->paginate(4);
+        return view('admin.product_category.index' , compact('categories'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create(): View
-    {
-        return view('add-category');
+    {   
+        if(!RolePermissionHelper::checkPermission('create product category')){
+            abort(403);
+        }
+        return view('admin.product_category.create');
     }
 
     /**
@@ -36,6 +48,9 @@ class ProductCategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request): RedirectResponse    
     {
+        if(!RolePermissionHelper::checkPermission('create product category')){
+            abort(403);
+        }
         // $path = $request->image->store('image', 'public');
         if($request->hasFile('image')){
             $imageName = time().'.'.request()->image->getClientOriginalExtension();
@@ -64,8 +79,11 @@ class ProductCategoryController extends Controller
      */
     public function edit(string $id): View
     {
+        if(!RolePermissionHelper::checkPermission('edit product category')){
+            abort(403);
+        }
         $product_category = ProductCategory::find($id);
-        return view('update-category', compact('product_category'));
+        return view('admin.product_category.edit', compact('product_category'));
     }
 
     /**
@@ -73,37 +91,32 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('edit product category')){
+            abort(403);
+        }
         $request->validate([
             'name' =>'required',
         ]);
 
         $product_category = ProductCategory::find($id);
+        $product_details = $request->except('image');
 
         if($request->hasFile('image')){
 
-            $image_path = storage_path('app/public/images/product_categories'. $product_category->image);
-            // dd($image_path);
+            $image_path = storage_path('app/public/images/product_categories/' . $product_category->image);
             if(file_exists($image_path)){
                 @unlink($image_path);
             }
     
-
             $imageName = time().'.'.$request->image->getClientOriginalExtension();
-            // $request->image->move(storage_path('app/public/images'),$imageName);
-            Storage::disk('public')->putFileAs('images/product_categories', $request->image, $imageName);
+            Storage::disk('public')->putFileAs('images/product_categories/', $request->image, $imageName);
 
-            $product_category->image = $imageName;
-            $product_category->name = $request->name;
-            $product_category->updated_by = Auth::id();
-            $product_category->save();
+            $product_details['image'] = $imageName;
+
         }
-        else{
-            $originalImage = $product_category->image;
-            $product_category->name = $request->name;
-            $product_category->updated_by = Auth::id();
-            $product_category->image = $originalImage;
-            $product_category->save();
-        }
+            $product_details['updated_by'] = Auth::id();
+            $product_category->update($product_details);
+
         return redirect()->route('product-category.index')->with('update_category', 'Category updated successfully');
     }
 
@@ -112,10 +125,13 @@ class ProductCategoryController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
+        if(!RolePermissionHelper::checkPermission('delete product category')){
+            abort(403);
+        }
         $product_category = ProductCategory::find($id);
         $product_category->delete();
 
-        $image_path = storage_path('app/public/images/product_categories'. $product_category->image);
+        $image_path = storage_path('app/public/images/product_categories/' . $product_category->image);
         // dd($image_path);
         if(file_exists($image_path)){
             @unlink($image_path);

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Helpers\RolePermissionHelper;
 use App\Http\Requests\AddProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
@@ -15,10 +17,24 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $products = Product::with('productCategory')->paginate(5);
-        return view('view-products', compact('products'));
+        $disableButtons = null;
+        if(!RolePermissionHelper::checkPermission("view product")){
+            abort(403);
+
+            $disableButtons = 'disable';
+        }
+      
+        $products = Product::with('productCategory')->where(function($query) use ($request){
+            if($request->has('search') && !empty($request->search)){
+                    $query->whereLike('name', "%{$request->search}%");
+
+                    $query->orWhereHas('productCategory', fn($q) =>  $q->whereLike('name', "%{$request->search}%"));
+            }
+        })->paginate(4);
+
+        return view('admin.product.index', compact('products', 'disableButtons'));
     }
 
     /**
@@ -26,8 +42,12 @@ class ProductController extends Controller
      */
     public function create(): View
     {
+        if(!RolePermissionHelper::checkPermission('create product')){
+            abort(403);
+        }
+
         $product_categories = ProductCategory::all();
-        return view('add-products', compact('product_categories'));
+        return view('admin.product.create', compact('product_categories'));
     }
 
     /**
@@ -35,9 +55,13 @@ class ProductController extends Controller
      */
     public function store(AddProductRequest $request): RedirectResponse
     {
-        $imageName = NULL;
-        if($request->hasFile('image')) {
-            $imageName = time().'.'.request()->image->getClientOriginalExtension();
+        if(!RolePermissionHelper::checkPermission('create product')){
+            abort(403);
+        }
+
+        $imageName = null;  
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . request()->image->getClientOriginalExtension();
             Storage::disk('public')->putFileAs('images/products', $request->image, $imageName);
         }
 
@@ -45,10 +69,9 @@ class ProductController extends Controller
         $data['image'] = $imageName;
         $data['created_by'] = Auth::id();
 
-        
         Product::create($data);
 
-        return redirect()->route('products.index')->with('addProducts', 'Product added successfully');        // dd($product->all());
+        return redirect()->route('products.index')->with('addProducts', 'Product added successfully'); // dd($product->all());
     }
 
     /**
@@ -64,67 +87,56 @@ class ProductController extends Controller
      */
     public function edit(Product $product): View
     {
-        $products= Product::with('productcategory')->find($product->id);
+        if(!RolePermissionHelper::checkPermission('edit product')){
+            abort(403);
+        }
+        $products = Product::with('productcategory')->find($product->id);
         $product_categories = ProductCategory::all();
-        return view('update-products', compact('products', 'product_categories'));
+        return view('admin.product.edit', compact('products', 'product_categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, string $id)
+    public function update(UpdateProductRequest $request, string $id): RedirectResponse
     {
-        $product = Product::find($id);
-
-        if($request->hasFile('image')){
-            $path = storage_path('app/public/images/products'. $product->image);
-
-            if(file_exists($path)) {
-                @unlink($path);
+        if(!RolePermissionHelper::checkPermission('edit product')){
+            abort(403);
         }
-        $image =time(). '.' .$request->image->extension();
-        Storage::disk('public')->putFileAs('/images/products/', $request->image, $image);
+        $product = Product::find($id);
+        $data = $request->except('image');
 
-        $product->image = $image;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->discount = $request->discount;
-        $product->stock = $request->stock;
-        $product->updated_by = Auth::id();
-        $product->product_category = $request->product_category;
-        $product->update();
+        if ($request->hasFile('image')) {
+            $path = storage_path('app/public/images/products/' . $product->image);
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            $image = time() . '.' . $request->image->extension();
+            Storage::disk('public')->putFileAs('/images/products/', $request->image, $image);
+
+            $data['image'] = $image;
+        }
+        $data['updated_by'] = Auth::id();
+
+        $product->update($data);
+
+        return redirect()->route('products.index')->with('updateProduct', 'Product updated successfully');
     }
-    else{
-        $productImage = $product->image;
-        $product->image = $productImage;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->discount = $request->discount;
-        $product->stock = $request->stock;
-        $product->updated_by = Auth::id();
-        $product->product_category = $request->product_category;
-        $product->update();
-    }
-    return redirect()->route('products.index')->with('updateProduct', 'Product updated successfully');
-
-
-}
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id): RedirectResponse
     {
-        echo "<script>";
-        echo "alert('hello');";
-        echo "</script>";
+        if(!RolePermissionHelper::checkPermission('delete product')){
+            abort(403);
+        }
         $product = Product::find($id);
         $product->delete();
 
-        $path = storage_path('app/public/images/products'. $product->image);
-        if(file_exists($path)){
+        $path = storage_path('app/public/images/products/' . $product->image);
+        if (file_exists($path)) {
             @unlink($path);
         }
 

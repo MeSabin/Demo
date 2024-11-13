@@ -1,4 +1,7 @@
-@extends('main-layout')
+@extends('admin.dashboard.layout')
+@section('pageName')
+    Dashboard
+@endsection
 @section('content')
     @if (session('loginSuccess'))
         <x-alert>
